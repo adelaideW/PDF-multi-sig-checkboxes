@@ -1,0 +1,29 @@
+
+import React from 'react';
+
+export interface DraggableField {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  type: string;
+}
+
+export interface PlacedField {
+  id: string;
+  type: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  page: number;
+  recipientId: string;
+  required: boolean;
+}
+
+export interface Signer {
+  id: string;
+  name: string;
+  color: string;
+  initials: string;
+}
