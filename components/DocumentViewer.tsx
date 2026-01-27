@@ -221,9 +221,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
               className={`absolute cursor-move border-2 transition-colors flex items-center justify-center group ${
                 isSelected 
                   ? 'border-[#2563eb] bg-[#eff6ff]/80 z-20 shadow-md' 
-                  : field.type === 'checkbox' 
-                    ? 'border-gray-300 bg-transparent z-10 hover:border-gray-400' 
-                    : 'border-[#3b82f6] bg-[#eff6ff]/40 z-10 hover:border-[#2563eb]'
+                  : 'border-gray-300 bg-transparent z-10 hover:border-gray-400'
               }`}
               style={{ left: field.x, top: field.y, width: field.width, height: field.height }}
             >
