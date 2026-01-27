@@ -41,13 +41,50 @@ const App: React.FC = () => {
     });
   };
 
-  const handleAddField = (fieldData: Omit<PlacedField, 'id'>) => {
+  const handleAddField = (fieldData: Omit<PlacedField, 'id'>, sourceFieldId?: string) => {
+    const id = Math.random().toString(36).substr(2, 9);
+    let groupId = fieldData.groupId;
+
+    // If added via plus icon from another field, handle grouping
+    if (sourceFieldId) {
+      const source = placedFields.find(f => f.id === sourceFieldId);
+      if (source && source.type === 'checkbox') {
+        if (!source.groupId) {
+          // Create new group for both
+          const newGroupId = `group_${Math.random().toString(36).substr(2, 5)}`;
+          groupId = newGroupId;
+          // Update source field to have this groupId
+          setPlacedFields(prev => prev.map(f => f.id === sourceFieldId ? { ...f, groupId: newGroupId } : f));
+        } else {
+          // Join existing group
+          groupId = source.groupId;
+        }
+      }
+    }
+
     const newField: PlacedField = {
       ...fieldData,
-      id: Math.random().toString(36).substr(2, 9),
+      id,
+      groupId
     };
+
     setPlacedFields(prev => [...prev, newField]);
-    setSelectedFieldIds([newField.id]);
+    
+    // Auto-select the newly added field (and its group if it belongs to one)
+    if (newField.groupId) {
+      const groupIds = [newField.id];
+      placedFields.forEach(f => {
+        if (f.groupId === newField.groupId) groupIds.push(f.id);
+      });
+      setSelectedFieldIds(groupIds);
+    } else {
+      setSelectedFieldIds([newField.id]);
+    }
+  };
+
+  const handleGroupFields = (ids: string[]) => {
+    const newGroupId = `group_${Math.random().toString(36).substr(2, 5)}`;
+    setPlacedFields(prev => prev.map(f => ids.includes(f.id) ? { ...f, groupId: newGroupId } : f));
   };
 
   const handleSelectField = (id: string | null, multi: boolean = false) => {
@@ -59,21 +96,45 @@ const App: React.FC = () => {
     const fieldToSelect = placedFields.find(f => f.id === id);
     if (!fieldToSelect) return;
 
+    // Expand selection to entire group if applicable
+    let idsToSelect = [id];
+    if (fieldToSelect.groupId) {
+      idsToSelect = placedFields
+        .filter(f => f.groupId === fieldToSelect.groupId)
+        .map(f => f.id);
+    }
+
     if (!multi) {
-      setSelectedFieldIds([id]);
+      setSelectedFieldIds(idsToSelect);
       return;
     }
 
     setSelectedFieldIds(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(p => p !== id);
+      // Toggle the whole group
+      const allInPrev = idsToSelect.every(item => prev.includes(item));
+      if (allInPrev) {
+        return prev.filter(p => !idsToSelect.includes(p));
       }
-      return [...prev, id];
+      
+      const newSelection = [...prev];
+      idsToSelect.forEach(item => {
+        if (!newSelection.includes(item)) newSelection.push(item);
+      });
+      return newSelection;
     });
   };
 
   const handleSelectMultipleFields = (ids: string[]) => {
-    setSelectedFieldIds(ids);
+    const allIds = new Set(ids);
+    ids.forEach(id => {
+      const field = placedFields.find(f => f.id === id);
+      if (field?.groupId) {
+        placedFields
+          .filter(f => f.groupId === field.groupId)
+          .forEach(f => allIds.add(f.id));
+      }
+    });
+    setSelectedFieldIds(Array.from(allIds));
   };
 
   const handleDeleteField = (ids: string[]) => {
@@ -160,6 +221,7 @@ const App: React.FC = () => {
           onDelete={() => handleDeleteField(selectedFieldIds)}
           onUpdate={(id, updates) => updateFields([id], updates)}
           onUpdateMultiple={(updates) => updateFields(selectedFieldIds, updates)}
+          onGroupFields={() => handleGroupFields(selectedFieldIds)}
           signers={SIGNERS}
         />
       </div>

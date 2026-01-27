@@ -7,10 +7,18 @@ interface SidebarRightProps {
   onDelete: () => void;
   onUpdate: (id: string, updates: Partial<PlacedField>) => void;
   onUpdateMultiple: (updates: Partial<PlacedField>) => void;
+  onGroupFields: () => void;
   signers: Signer[];
 }
 
-const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, onUpdate, onUpdateMultiple, signers }) => {
+const SidebarRight: React.FC<SidebarRightProps> = ({ 
+  selectedFields, 
+  onDelete, 
+  onUpdate, 
+  onUpdateMultiple, 
+  onGroupFields,
+  signers 
+}) => {
   const [openSections, setOpenSections] = useState({
     recipient: true,
     required: true,
@@ -66,19 +74,33 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
   const allSameRecipient = selectedFields.every(f => f.recipientId === firstField.recipientId);
   const allSameRequired = selectedFields.every(f => f.required === firstField.required);
   
+  const isCheckboxSelection = selectedFields.length > 0 && allSameType && firstField.type === 'checkbox';
+  const allInSameGroup = isCheckboxSelection && selectedFields.every(f => !!f.groupId && f.groupId === firstField.groupId);
+  const canBeGrouped = isCheckboxSelection && selectedFields.length > 1 && !allInSameGroup;
+
   const selectedSigner = signers.find(s => s.id === (allSameRecipient ? firstField.recipientId : '')) || null;
   const checkboxFields = selectedFields.filter(f => f.type === 'checkbox');
 
-  // Input styling shared across sections - matching the left sidebar's compact style
-  const inputBaseClasses = "w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-[14px] outline-none hover:border-gray-300 focus:border-blue-500 transition-all";
+  // Input styling shared across sections - very compact
+  const inputBaseClasses = "w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] outline-none hover:border-gray-300 focus:border-blue-500 transition-all";
   const labelClasses = "text-[14px] font-bold text-gray-800";
 
   return (
     <aside className="w-[320px] bg-white border-l flex flex-col shrink-0 overflow-y-auto shadow-sm">
       {/* Header */}
-      <div className="px-5 py-4 flex items-center justify-between border-b bg-white sticky top-0 z-50">
-        <span className="font-bold text-gray-800 text-[16px]">{selectedFields.length} selected</span>
-        <div className="flex items-center space-x-3">
+      <div className="px-4 py-3 flex items-center justify-between border-b bg-white sticky top-0 z-50">
+        <div className="flex items-center space-x-2">
+          <span className="font-bold text-gray-800 text-[15px]">{selectedFields.length} selected</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          {canBeGrouped && (
+            <button 
+              onClick={onGroupFields}
+              className="px-2.5 py-1 border border-[#42003c] text-[#42003c] rounded text-[12px] font-bold hover:bg-[#42003c] hover:text-white transition-all mr-2"
+            >
+              Group
+            </button>
+          )}
           <button className="text-gray-400 hover:text-black p-1">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
           </button>
@@ -88,30 +110,30 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
         </div>
       </div>
 
-      <div className="p-5 space-y-6">
+      <div className="p-4 space-y-5">
         {/* Recipient Section */}
         <section>
-          <button onClick={() => toggleSection('recipient')} className="w-full flex items-center justify-between mb-4">
+          <button onClick={() => toggleSection('recipient')} className="w-full flex items-center justify-between mb-3">
             <span className={labelClasses}>Recipient</span>
-            <svg className={`w-3.5 h-3.5 transition-transform ${openSections.recipient ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
+            <svg className={`w-3 h-3 transition-transform ${openSections.recipient ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
           </button>
           
           {openSections.recipient && (
-            <div className="relative group flex items-center bg-white border border-gray-200 rounded-xl p-2.5 shadow-sm hover:border-gray-300 cursor-pointer">
-              <div className="relative mr-3">
+            <div className="relative group flex items-center bg-white border border-gray-200 rounded-xl p-2 shadow-sm hover:border-gray-300 cursor-pointer">
+              <div className="relative mr-3 shrink-0">
                 <img 
-                  src={`https://picsum.photos/seed/${selectedSigner?.id || 'default'}/64/64`} 
-                  className="w-10 h-10 rounded-full object-cover grayscale"
+                  src={`https://picsum.photos/seed/${selectedSigner?.id || 'mixed'}/64/64`} 
+                  className="w-8 h-8 rounded-full object-cover grayscale"
                   alt="signer"
                 />
-                <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-yellow-400"></div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-white bg-yellow-400"></div>
               </div>
               <div className="flex-1 overflow-hidden">
-                <span className="text-[14px] font-medium text-gray-900 truncate block">
+                <span className="text-[13px] font-medium text-gray-900 truncate block">
                   {selectedSigner ? selectedSigner.name : 'Mixed Recipients'}
                 </span>
               </div>
-              <svg className="w-4 h-4 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+              <svg className="w-3.5 h-3.5 text-gray-400 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
               <select 
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 value={allSameRecipient ? firstField.recipientId : ''}
@@ -125,94 +147,93 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
         </section>
 
         {/* Required Toggle */}
-        <section className="flex items-center space-x-3 pt-1">
+        <section className="flex items-center space-x-2 pt-0.5">
           <input 
             type="checkbox" 
             id="required-toggle"
             checked={allSameRequired ? firstField.required : false} 
             ref={el => { if (el) el.indeterminate = !allSameRequired; }}
             onChange={(e) => onUpdateMultiple({ required: e.target.checked })}
-            className="w-5 h-5 rounded border-gray-300 text-purple-700 focus:ring-purple-500 cursor-pointer"
+            className="w-4 h-4 rounded border-gray-300 text-purple-700 focus:ring-purple-500 cursor-pointer"
           />
           <label htmlFor="required-toggle" className="text-[14px] font-bold text-gray-800 cursor-pointer">Required</label>
         </section>
 
-        {/* Checkbox value - Match count of checkboxes selected */}
-        {allSameType && firstField.type === 'checkbox' && (
-          <section className="pt-1">
-            <button onClick={() => toggleSection('value')} className="w-full flex items-center justify-between mb-4">
-              <span className={labelClasses}>Checkbox value</span>
-              <svg className={`w-3.5 h-3.5 transition-transform ${openSections.value ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
-            </button>
-            {openSections.value && (
-              <div className="space-y-3">
-                {checkboxFields.map((field, idx) => (
-                  <div key={field.id} className="flex items-center space-x-2">
-                    <input type="checkbox" className="w-5 h-5 rounded border-gray-200" />
-                    <input 
-                      type="text" 
-                      placeholder="Placeholder text" 
-                      className={inputBaseClasses}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* Validation - Only for same-type fields */}
-        {allSameType && (
-          <section className="pt-1">
-            <button onClick={() => toggleSection('validation')} className="w-full flex items-center justify-between mb-4">
-              <span className={labelClasses}>Validation</span>
-              <svg className={`w-3.5 h-3.5 transition-transform ${openSections.validation ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
-            </button>
-            {openSections.validation && (
-              <div className="space-y-3">
-                <div className="relative" ref={dropdownRef}>
-                  <button 
-                    onClick={() => setIsValidationDropdownOpen(!isValidationDropdownOpen)}
-                    className={`${inputBaseClasses} flex items-center justify-between text-left`}
-                  >
-                    <span className="text-gray-900">{validationType}</span>
-                    <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
-                  </button>
-                  {isValidationDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-100 rounded-lg shadow-xl z-[100] py-1 overflow-hidden">
-                      {validationOptions.map((option) => (
-                        <div key={option} className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-[13px]" onClick={() => { setValidationType(option); setIsValidationDropdownOpen(false); }}>
-                          {option}
-                        </div>
-                      ))}
+        {/* Checkbox settings - Show if grouped or multiple checkboxes are selected */}
+        {isCheckboxSelection && (allInSameGroup || selectedFields.length > 1) && (
+          <>
+            <section className="pt-0.5">
+              <button onClick={() => toggleSection('value')} className="w-full flex items-center justify-between mb-3">
+                <span className={labelClasses}>Checkbox value</span>
+                <svg className={`w-3 h-3 transition-transform ${openSections.value ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
+              </button>
+              {openSections.value && (
+                <div className="space-y-2">
+                  {checkboxFields.map((field, idx) => (
+                    <div key={field.id} className="flex items-center space-x-2">
+                      <input type="checkbox" className="w-4 h-4 rounded border-gray-200" />
+                      <input 
+                        type="text" 
+                        placeholder="Placeholder text" 
+                        className={inputBaseClasses}
+                      />
                     </div>
-                  )}
+                  ))}
                 </div>
-                <div className="relative">
-                  <select className={`${inputBaseClasses} appearance-none pr-10`}>
-                    <option>0</option>
-                  </select>
-                  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+              )}
+            </section>
+
+            <section className="pt-0.5">
+              <button onClick={() => toggleSection('validation')} className="w-full flex items-center justify-between mb-3">
+                <span className={labelClasses}>Validation</span>
+                <svg className={`w-3 h-3 transition-transform ${openSections.validation ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
+              </button>
+              {openSections.validation && (
+                <div className="space-y-2">
+                  <div className="relative" ref={dropdownRef}>
+                    <button 
+                      onClick={() => setIsValidationDropdownOpen(!isValidationDropdownOpen)}
+                      className={`${inputBaseClasses} flex items-center justify-between text-left`}
+                    >
+                      <span className="text-gray-900">{validationType}</span>
+                      <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    {isValidationDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-100 rounded-lg shadow-xl z-[100] py-1 overflow-hidden">
+                        {validationOptions.map((option) => (
+                          <div key={option} className="px-3 py-1.5 hover:bg-gray-50 cursor-pointer text-[12px]" onClick={() => { setValidationType(option); setIsValidationDropdownOpen(false); }}>
+                            {option}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <select className={`${inputBaseClasses} appearance-none pr-10`}>
+                      <option>0</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </section>
+              )}
+            </section>
+          </>
         )}
 
         {/* Location Section */}
-        <section className="pt-1">
-          <button onClick={() => toggleSection('location')} className="w-full flex items-center justify-between mb-4">
+        <section className="pt-0.5">
+          <button onClick={() => toggleSection('location')} className="w-full flex items-center justify-between mb-3">
             <span className={labelClasses}>Location</span>
-            <svg className={`w-3.5 h-3.5 transition-transform ${openSections.location ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
+            <svg className={`w-3 h-3 transition-transform ${openSections.location ? '' : '-rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
           </button>
           
           {openSections.location && (
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-3 shadow-sm">
-                <span className="text-[14px] text-gray-400">Page number</span>
-                <span className="text-[14px] font-bold text-gray-900">1</span>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-2.5 py-2 shadow-sm">
+                <span className="text-[13px] text-gray-400">Page number</span>
+                <span className="text-[13px] font-bold text-gray-900">1</span>
               </div>
               
               <div className="relative group">
@@ -220,9 +241,9 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
                   type="text" 
                   value={selectedFields.length === 1 ? `${Math.round(firstField.x)} px` : '-- px'} 
                   readOnly={selectedFields.length > 1}
-                  className={`${inputBaseClasses} font-medium pr-24`}
+                  className={`${inputBaseClasses} font-medium pr-24 py-1.5`}
                 />
-                <span className="absolute inset-y-0 right-3 flex items-center text-gray-400 pointer-events-none text-[12px]">px from left</span>
+                <span className="absolute inset-y-0 right-2.5 flex items-center text-gray-400 pointer-events-none text-[11px]">px from left</span>
               </div>
 
               <div className="relative group">
@@ -230,9 +251,9 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
                   type="text" 
                   value={selectedFields.length === 1 ? `${Math.round(800 - firstField.x - firstField.width)} px` : '-- px'} 
                   readOnly={selectedFields.length > 1}
-                  className={`${inputBaseClasses} font-medium pr-24`}
+                  className={`${inputBaseClasses} font-medium pr-24 py-1.5`}
                 />
-                <span className="absolute inset-y-0 right-3 flex items-center text-gray-400 pointer-events-none text-[12px]">px from right</span>
+                <span className="absolute inset-y-0 right-2.5 flex items-center text-gray-400 pointer-events-none text-[11px]">px from right</span>
               </div>
 
               <div className="relative group">
@@ -240,9 +261,9 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
                   type="text" 
                   value={selectedFields.length === 1 ? `${Math.round(firstField.width)} px` : '-- px'} 
                   readOnly={selectedFields.length > 1}
-                  className={`${inputBaseClasses} font-medium pr-24`}
+                  className={`${inputBaseClasses} font-medium pr-24 py-1.5`}
                 />
-                <span className="absolute inset-y-0 right-3 flex items-center text-gray-400 pointer-events-none text-[12px]">px wide</span>
+                <span className="absolute inset-y-0 right-2.5 flex items-center text-gray-400 pointer-events-none text-[11px]">px wide</span>
               </div>
 
               <div className="relative group">
@@ -250,9 +271,9 @@ const SidebarRight: React.FC<SidebarRightProps> = ({ selectedFields, onDelete, o
                   type="text" 
                   value={selectedFields.length === 1 ? `${Math.round(firstField.height)} px` : '-- px'} 
                   readOnly={selectedFields.length > 1}
-                  className={`${inputBaseClasses} font-medium pr-24`}
+                  className={`${inputBaseClasses} font-medium pr-24 py-1.5`}
                 />
-                <span className="absolute inset-y-0 right-3 flex items-center text-gray-400 pointer-events-none text-[12px]">px tall</span>
+                <span className="absolute inset-y-0 right-2.5 flex items-center text-gray-400 pointer-events-none text-[11px]">px tall</span>
               </div>
             </div>
           )}

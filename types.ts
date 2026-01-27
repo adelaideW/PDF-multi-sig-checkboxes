@@ -19,6 +19,7 @@ export interface PlacedField {
   page: number;
   recipientId: string;
   required: boolean;
+  groupId?: string;
 }
 
 export interface Signer {
