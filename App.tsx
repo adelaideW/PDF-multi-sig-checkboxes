@@ -5,6 +5,7 @@ import SubNavbar from './components/SubNavbar';
 import SidebarLeft from './components/SidebarLeft';
 import DocumentViewer from './components/DocumentViewer';
 import SidebarRight from './components/SidebarRight';
+import VariableSelectorModal from './components/VariableSelectorModal';
 import Footer from './components/Footer';
 import { PlacedField, Signer } from './types';
 
@@ -18,6 +19,7 @@ const App: React.FC = () => {
   const [placedFields, setPlacedFields] = useState<PlacedField[]>([]);
   const [selectedFieldIds, setSelectedFieldIds] = useState<string[]>([]);
   const [activeSignerId, setActiveSignerId] = useState<string>(SIGNERS[0].id);
+  const [isVariableModalOpen, setIsVariableModalOpen] = useState(false);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 10, 400));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 10, 50));
@@ -80,6 +82,11 @@ const App: React.FC = () => {
     } else {
       setSelectedFieldIds([newField.id]);
     }
+
+    // If it's an employee attribute, immediately open the modal
+    if (newField.type === 'employee_attributes') {
+      setIsVariableModalOpen(true);
+    }
   };
 
   const handleGroupFields = (ids: string[]) => {
@@ -106,6 +113,10 @@ const App: React.FC = () => {
 
     if (!multi) {
       setSelectedFieldIds(idsToSelect);
+      // If clicking an already selected attribute field, allow re-opening modal
+      if (fieldToSelect.type === 'employee_attributes') {
+        setIsVariableModalOpen(true);
+      }
       return;
     }
 
@@ -146,6 +157,18 @@ const App: React.FC = () => {
     setPlacedFields(prev => prev.map(f => ids.includes(f.id) ? { ...f, ...updates } : f));
   };
 
+  const handleSelectVariable = (variableName: string) => {
+    // Apply variable to currently selected employee_attributes field
+    const attrFields = selectedFieldIds.filter(id => {
+      const f = placedFields.find(field => field.id === id);
+      return f?.type === 'employee_attributes';
+    });
+
+    if (attrFields.length > 0) {
+      updateFields(attrFields, { variableName });
+    }
+  };
+
   // Keyboard shortcut for deleting selected fields
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
@@ -183,6 +206,7 @@ const App: React.FC = () => {
           activeSigner={activeSigner} 
           signers={SIGNERS} 
           onSignerChange={setActiveSignerId} 
+          onOpenVariableModal={() => setIsVariableModalOpen(true)}
         />
 
         <div className="flex-1 flex flex-col bg-gray-200 overflow-hidden">
@@ -213,6 +237,7 @@ const App: React.FC = () => {
             onSelectMultipleFields={handleSelectMultipleFields}
             onUpdateField={(id, updates) => updateFields([id], updates)}
             onUpdateMultipleFields={updateFields}
+            onDeleteField={handleDeleteField}
           />
         </div>
 
@@ -225,6 +250,12 @@ const App: React.FC = () => {
           signers={SIGNERS}
         />
       </div>
+
+      <VariableSelectorModal 
+        isOpen={isVariableModalOpen} 
+        onClose={() => setIsVariableModalOpen(false)} 
+        onSelect={handleSelectVariable}
+      />
 
       <Footer />
     </div>

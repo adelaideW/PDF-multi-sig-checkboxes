@@ -12,6 +12,7 @@ export interface PlacedField {
   id: string;
   type: string;
   label: string;
+  variableName?: string;
   x: number;
   y: number;
   width: number;
