@@ -82,7 +82,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
   const checkboxFields = selectedFields.filter(f => f.type === 'checkbox');
 
   // Input styling shared across sections - very compact
-  const inputBaseClasses = "w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] outline-none hover:border-gray-300 focus:border-blue-500 transition-all";
+  const inputBaseClasses = "w-full bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] outline-none hover:border-gray-300 focus:border-[#7A005D] transition-all";
   const labelClasses = "text-[14px] font-bold text-gray-800";
 
   return (
@@ -96,7 +96,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
           {canBeGrouped && (
             <button 
               onClick={onGroupFields}
-              className="px-2.5 py-1 border border-[#42003c] text-[#42003c] rounded text-[12px] font-bold hover:bg-[#42003c] hover:text-white transition-all mr-2"
+              className="px-2.5 py-1 border border-[#7A005D] text-[#7A005D] rounded text-[12px] font-bold hover:bg-[#7A005D] hover:text-white transition-all mr-2"
             >
               Group
             </button>
@@ -154,7 +154,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
             checked={allSameRequired ? firstField.required : false} 
             ref={el => { if (el) el.indeterminate = !allSameRequired; }}
             onChange={(e) => onUpdateMultiple({ required: e.target.checked })}
-            className="w-4 h-4 rounded border-gray-300 text-purple-700 focus:ring-purple-500 cursor-pointer"
+            className="w-4 h-4 rounded border-gray-300 text-[#7A005D] focus:ring-[#7A005D] cursor-pointer"
           />
           <label htmlFor="required-toggle" className="text-[14px] font-bold text-gray-800 cursor-pointer">Required</label>
         </section>

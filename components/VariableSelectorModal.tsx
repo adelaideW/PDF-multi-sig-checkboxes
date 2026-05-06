@@ -247,13 +247,13 @@ const VariableSelectorModal: React.FC<VariableSelectorModalProps> = ({ isOpen, o
         <div className="px-5 py-3 flex items-center justify-between border-b border-gray-100">
           <h2 className="text-[17px] font-semibold text-gray-900">Select variable</h2>
           <div className="flex items-center space-x-3">
-            <div className={`relative ${isSearching ? 'ring-1 ring-[#42003c] rounded-md' : ''}`}>
+            <div className={`relative ${isSearching ? 'ring-1 ring-[#7A005D] rounded-md' : ''}`}>
               <input
                 type="text"
                 placeholder="Search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-[240px] bg-white border border-gray-200 rounded-md pl-9 pr-4 py-1.5 text-[14px] outline-none focus:ring-1 focus:ring-[#42003c] focus:border-[#42003c] transition-all"
+                className="w-[240px] bg-white border border-gray-200 rounded-md pl-9 pr-4 py-1.5 text-[14px] outline-none focus:ring-1 focus:ring-[#7A005D] focus:border-[#7A005D] transition-all"
               />
               <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
@@ -357,7 +357,7 @@ const VariableSelectorModal: React.FC<VariableSelectorModalProps> = ({ isOpen, o
                     >
                       <div className="flex items-center space-x-3">
                         {item.type ? <Icon type={item.type} /> : null}
-                        <span className={`text-[14px] text-gray-700 font-medium ${item.hasNested || item.isCategory ? '' : 'group-hover:text-[#42003c]'}`}>
+                        <span className={`text-[14px] text-gray-700 font-medium ${item.hasNested || item.isCategory ? '' : 'group-hover:text-[#7A005D]'}`}>
                           {item.name} {item.count ? `(${item.count})` : ''}
                         </span>
                       </div>

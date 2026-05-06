@@ -10,7 +10,7 @@ import Footer from './components/Footer';
 import { PlacedField, Signer } from './types';
 
 const SIGNERS: Signer[] = [
-  { id: '1', name: 'David Woods', initials: 'D', color: 'bg-blue-100 text-blue-800' },
+  { id: '1', name: 'David Woods', initials: 'D', color: 'bg-[#7A005D]/15 text-[#7A005D]' },
   { id: '2', name: 'Brooklyn Simmons', initials: 'B', color: 'bg-orange-100 text-orange-800' }
 ];
 

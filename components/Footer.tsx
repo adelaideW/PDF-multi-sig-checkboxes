@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <span>Back</span>
       </button>
       
-      <button className="bg-[#42003c] hover:bg-[#5d2d58] text-white px-10 py-2.5 rounded-lg text-[14px] font-bold shadow-md transition-all active:scale-[0.98] active:shadow-inner">
+      <button className="bg-[#7A005D] hover:bg-[#5f0a49] text-white px-10 py-2.5 rounded-lg text-[14px] font-bold shadow-md transition-all active:scale-[0.98] active:shadow-inner">
         Send
       </button>
     </footer>

@@ -211,7 +211,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
         </div>
 
         {selectionBox && (
-          <div className="absolute border border-blue-500 bg-blue-500/5 pointer-events-none z-[100]"
+          <div className="absolute border border-[#7A005D] bg-[#7A005D]/5 pointer-events-none z-[100]"
             style={{ left: selectionBox.x, top: selectionBox.y, width: selectionBox.width, height: selectionBox.height }}
           />
         )}
@@ -226,7 +226,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                 key={field.id}
                 onMouseDown={(e) => handleFieldMouseDown(e, field)}
                 className={`absolute cursor-move flex items-center bg-white border rounded-md shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-all group ${
-                  isSelected ? 'border-blue-500 ring-2 ring-blue-500/20 z-20 shadow-md' : 'border-gray-200 z-10 hover:border-gray-300'
+                  isSelected ? 'border-[#7A005D] ring-2 ring-[#7A005D]/20 z-20 shadow-md' : 'border-gray-200 z-10 hover:border-gray-300'
                 }`}
                 style={{ left: field.x, top: field.y, height: '34px' }}
               >
@@ -261,15 +261,15 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
               onMouseLeave={() => setHoveredSide(null)}
               className={`absolute cursor-move border-2 transition-all flex items-center justify-center group ${
                 isSelected 
-                  ? 'border-[#2563eb] bg-[#eff6ff]/70 z-20 shadow-[0_4px_12px_rgba(37,99,235,0.2)]' 
+                  ? 'border-[#7A005D] bg-[#7A005D]/10 z-20 shadow-[0_4px_12px_rgba(122,0,93,0.2)]' 
                   : 'border-gray-300 bg-transparent z-10 hover:border-gray-400'
               }`}
               style={{ left: field.x, top: field.y, width: field.width, height: field.height }}
             >
               {field.type === 'checkbox' ? (
-                <div className="w-[14px] h-[14px] border border-[#2563eb] bg-white rounded-sm shadow-sm relative"></div>
+                <div className="w-[14px] h-[14px] border border-[#7A005D] bg-white rounded-sm shadow-sm relative"></div>
               ) : (
-                <span className="text-[9px] font-bold text-[#1d4ed8] uppercase pointer-events-none px-2 text-center truncate tracking-wider">
+                <span className="text-[9px] font-bold text-[#7A005D] uppercase pointer-events-none px-2 text-center truncate tracking-wider">
                   {field.label}
                 </span>
               )}
@@ -282,19 +282,19 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                   <div className="absolute inset-y-0 -right-4 w-4 cursor-default z-30" onMouseEnter={() => setHoveredSide('right')} />
 
                   <button onClick={(e) => handleQuickAdd(e, field, 'top')}
-                    className={`absolute -top-7 left-1/2 -translate-x-1/2 w-5.5 h-5.5 bg-white border border-[#2563eb] text-[#2563eb] rounded-full flex items-center justify-center hover:bg-[#2563eb] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'top' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
+                    className={`absolute -top-7 left-1/2 -translate-x-1/2 w-5.5 h-5.5 bg-white border border-[#7A005D] text-[#7A005D] rounded-full flex items-center justify-center hover:bg-[#7A005D] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'top' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4"/></svg>
                   </button>
                   <button onClick={(e) => handleQuickAdd(e, field, 'bottom')}
-                    className={`absolute -bottom-7 left-1/2 -translate-x-1/2 w-5.5 h-5.5 bg-white border border-[#2563eb] text-[#2563eb] rounded-full flex items-center justify-center hover:bg-[#2563eb] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'bottom' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
+                    className={`absolute -bottom-7 left-1/2 -translate-x-1/2 w-5.5 h-5.5 bg-white border border-[#7A005D] text-[#7A005D] rounded-full flex items-center justify-center hover:bg-[#7A005D] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'bottom' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4"/></svg>
                   </button>
                   <button onClick={(e) => handleQuickAdd(e, field, 'left')}
-                    className={`absolute top-1/2 -left-7 -translate-y-1/2 w-5.5 h-5.5 bg-white border border-[#2563eb] text-[#2563eb] rounded-full flex items-center justify-center hover:bg-[#2563eb] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'left' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
+                    className={`absolute top-1/2 -left-7 -translate-y-1/2 w-5.5 h-5.5 bg-white border border-[#7A005D] text-[#7A005D] rounded-full flex items-center justify-center hover:bg-[#7A005D] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'left' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4"/></svg>
                   </button>
                   <button onClick={(e) => handleQuickAdd(e, field, 'right')}
-                    className={`absolute top-1/2 -right-7 -translate-y-1/2 w-5.5 h-5.5 bg-white border border-[#2563eb] text-[#2563eb] rounded-full flex items-center justify-center hover:bg-[#2563eb] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'right' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
+                    className={`absolute top-1/2 -right-7 -translate-y-1/2 w-5.5 h-5.5 bg-white border border-[#7A005D] text-[#7A005D] rounded-full flex items-center justify-center hover:bg-[#7A005D] hover:text-white transition-all shadow-md z-40 ${hoveredSide === 'right' ? 'opacity-100 scale-110' : 'opacity-0 scale-75 pointer-events-none'}`}>
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4"/></svg>
                   </button>
                 </>
