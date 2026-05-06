@@ -48,23 +48,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  if (selectedFields.length === 0) {
-    return (
-      <aside className="w-[320px] bg-white border-l flex flex-col shrink-0 items-center justify-center relative">
-        <div className="flex flex-col items-center text-center px-6">
-          <div className="mb-6 text-[#d1d5db]">
-            <svg className="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
-          </div>
-          <p className="text-[#9ca3af] text-[18px] font-medium tracking-tight">No fields selected</p>
-        </div>
-      </aside>
-    );
-  }
-
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
   };

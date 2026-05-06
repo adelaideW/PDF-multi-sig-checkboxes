@@ -241,14 +241,16 @@ const App: React.FC = () => {
           />
         </div>
 
-        <SidebarRight 
-          selectedFields={selectedFields} 
-          onDelete={() => handleDeleteField(selectedFieldIds)}
-          onUpdate={(id, updates) => updateFields([id], updates)}
-          onUpdateMultiple={(updates) => updateFields(selectedFieldIds, updates)}
-          onGroupFields={() => handleGroupFields(selectedFieldIds)}
-          signers={SIGNERS}
-        />
+        {selectedFieldIds.length > 0 && (
+          <SidebarRight 
+            selectedFields={selectedFields} 
+            onDelete={() => handleDeleteField(selectedFieldIds)}
+            onUpdate={(id, updates) => updateFields([id], updates)}
+            onUpdateMultiple={(updates) => updateFields(selectedFieldIds, updates)}
+            onGroupFields={() => handleGroupFields(selectedFieldIds)}
+            signers={SIGNERS}
+          />
+        )}
       </div>
 
       <VariableSelectorModal 
