@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { PortfolioReturnLink } from './components/PortfolioReturnLink';
 import TopNavbar from './components/TopNavbar';
 import SubNavbar from './components/SubNavbar';
 import SidebarLeft from './components/SidebarLeft';
@@ -260,6 +261,7 @@ const App: React.FC = () => {
       />
 
       <Footer />
+      <PortfolioReturnLink />
     </div>
   );
 };
